@@ -62,3 +62,38 @@ Objectif : créer des outils d'aide à la prise de décision ; et des outils de 
 - comparaison du Price-to-Earnings Ratio (PER) de l'entreprise à ceux respectifs de ses concurrents (+ si trop écarté de la moyenne : analyse de pourquoi il est écarté de la moyenne => recommandation ponctuelle)
 
 
+--------------------------------------------------------------------------------------------------------------------------
+
+L idee, 
+
+    on prends les 150 cotations
+    on les divise en X secteurs, 
+
+    Avec les secteurs, on fait une analyse de chaque boite dans son secteur, avec les indicateurs Corpo Finance ET le potentiel de croissance du cours
+   
+    Score:
+        - La sante fianciere
+        - La competitivite
+        - Le cours
+        - L environnement
+
+
+    Resistution:
+        - Tableau de bord -> Perfs portfolio
+                          -> Positions -> CT / LT
+                          -> Suggestions de positions
+        
+        - Outil:
+            - Possibilite d Analyse du ticker X
+                                                -> Prendre en compte les 4 piliers du Score
+            - Copie indirecte de Portfolios existants
+
+    Realisation:
+        - Geopo -> Main pour le debut MAIS a automatiser.
+        - Copie indirect de portfolio a la main
+        - Perf portfolio -> Math Python
+        - Suggestion -> ML Python
+        - Competitivite SQL / Python
+        - Le cours Python / ML Python
+        - Sante fianciere scrapping Python
+ 
