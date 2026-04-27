@@ -1,2 +1,64 @@
 
-tu peux mettre icic les notes pour le developpememnt, et tes ideees 
+tu peux mettre ici les notes pour le développement, et tes idées 
+
+
+OBJECTIF DE LONG TERME (LT) : investir 20k sur eToro (à partir du 1er Juin 2026 si mois de Mai convaincant) et 5k sur PEA (invts de LT à défiscaliser).
+
+
+
+
+OBJECTIF DE COURT TERME (CT : à finir avant le 29 Mai 2026) :
+Créer un fonds eToro en actions avec 500€ et 1500$ de mise initiale -> frais de conversion assumés une seule et unique fois sur EUR/USD
+Objectif de 1% par jour en moyenne.
+
+
+PARTIE 1 : ÉTABLISSEMENT DE LA STRATÉGIE GLOBALE D'INVESTISSEMENT
+
+
+1) Quels secteurs viser ?
+- Secteurs à prioriser : industrie, énergie, tech, médical, banque/assurance/finance, défense
+- produits à mieux maitriser, mais pas prioritaires : commodities, forex
+- Blacklist : crypto
+
+2) Comment gérer le sujet de la bulle IA ?
+- ANALYSER LES TENDANCES DE COURT TERME (CT) -> au niveau de l'adoption par les entreprises et la hausse de la production de GPU, datacenters, chipmakers et associés (ASML, TSMC, Nvidia, Intel, ASM NV, Meta, Google, AWS), secteur de l'énergie (Total, Technip Energies NV, ...)
+- ANALYSER LES TENDANCES DE LONG TERME (LT)-> micro-économiques et surtout MACRO-économiques (O&D, OG/DG, marché du travail, marché de l'énergie, innovation et gains de productivité/ gains d'efficience énergétique (=> soutenabilité financière par la réduction des coûts opérationnels)
+
+=> AVIS TEMPORAIRE SUR LA BULLE IA : en profiter tant qu'elle est en plein boom avec beaucoup d'effets d'annonce à venir (les entreprises d'IA ont beaucoup dans les cartons prêts à être dévoilés) donc hausse à venir dans les 12 prochains mois au minimum => possibilité d'ouvrir des positions longues (10-12 mois ou plus, pour profiter des ouvertures en hausse) => titres assez volatils donc oeil à garder sur les phases de baisse pour vendre et racheter en intra-day et limiter les pertes de valeurs à CT (moins prioritaire que de maintenir les positions de LT)
+
+3) Comment répartir les fonds (en ratio de liquidités_pour_trading / positions_longues) ?
+- viser 60% de liquidités en fin de journée pour trader en intraday (≈ scalping)
+- garder 30% de positions à forte croissance (tech, IA, énergie) -> postions de plusieurs semaines/mois à surveiller chaque jour et sur lesquelles il faut continuellement analyser les mouvements à venir dans les 24 prochaines heures (utilité énorme de la data pour IA prédictive + jugement par l'humain)
+- avoir 10% à consacrer à des faibles valorisations (inf à 3 bn de market cap) qui peuvent faire des +25% ou plus sur la journée (souhaitable d'investir la veille pour boom ouverture, mais il y a bcp à grater en intraday aussi, compte tenu de la faible visibilité pré-boom de ces valeurs)
+
+
+PARTIE 2 : LES OUTILS TECHNIQUES (PARTIE DEV)
+
+Objectif : créer des outils d'aide à la prise de décision ; et des outils de sourcing / alertes.
+
+1) Aide à la décision (sur les actions repérées par le Sourcing IA ou par Sourcing humain) : 
+- IA prédictive MT (quels paramètres, KPIs et calculs d'indicateurs ?) ≈ modélisation financière
+- IA prédictive LT (quels paramètres, KPIs et calculs d'indicateurs ?) ≈ modélisation économique
+=> rien pour le CT : à part si tu penses à un solution / algo de scalping (pas convaincu vu notre niveau)
+
+2) Sourcing IA : 
+- Large cap : bcp de données chiffrées exploitables, grande corrélation avec les évènements géopolitiques (à incorporer dans le rapport IA -> scrapping supplémentaire au niveau des articles de presse : créer de la data sur les news, tq proba d'éclatement géopolitique et incidence prévue sur la valeur si éclatement => à multiplier l'une par l'autre)
+- Small cap : moins de data et d'articles, corrélation à son développement de l'innovation
+
+=> LIVRABLES : 
+- une LISTE avec toutes les valeurs repérées, triées par prévision de croissance sur 48h
+- un PROMPT capable de générer à la demande un RAPPORT précis sur chaque valeur, intégrant les différents KPIs 
+- un PROMPT capable de définir des RECOMMANDATIONS d'ordres à passer durant la journée (max. 30 ordres par jour) selon les résultats du sourcing réalisé
+
+=> KPIs d'un rapport :
+- pitch de présentation de l'entreprise, présentant ses activités, ses actualités et son histoire (entre 5 et 15 lignes)
+- prédiction du cours à 48h
+- prédiction du cours à 12 mois
+- probabilité d'occurence de chaque risque géopolitique détecté pouvant influer sur le cours
+- impact estimé de chacun de ces risques géopolitiques sur le cours si occurence
+- performances passées du secteur (croissance du CA global annuel du secteur, et des bénéfices nets annuels du secteur)
+- performances futures estimées du secteur (croissance du CA global annuel du secteur, et des bénéfices nets annuels du secteur)
+- évolution de la part de marché de l'entreprise + estimation à 12 mois
+- comparaison du Price-to-Earnings Ratio (PER) de l'entreprise à ceux respectifs de ses concurrents (+ si trop écarté de la moyenne : analyse de pourquoi il est écarté de la moyenne => recommandation ponctuelle)
+
+
