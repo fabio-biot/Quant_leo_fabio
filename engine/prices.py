@@ -4,7 +4,7 @@ from src.database import get_connection
 
 
 def import_stock_data(ticker: str, start_date: str, end_date: str):
-    df = pd.DataFrame(yf.download(ticker, start=start_date, end=end_date))
+    df = pd.DataFrame(yf.download(ticker, start=start_date, end=end_date, auto_adjust=True))
     df["ticker"] = ticker
     df = df.rename(columns={'Date': 'date'})
     if isinstance(df.columns, pd.MultiIndex):
@@ -45,6 +45,7 @@ def fetch_prices(ticker: str, start_date: str, end_date: str):
     hist_data['RSI_14'] = compute_rsi(14, hist_data['Close'])
     hist_data['Close_lag_1'] = hist_data['Close'].shift(1)
     hist_data['Close_lag_2'] = hist_data['Close'].shift(2)
+    hist_data['adjusted_close'] = 'i'
     hist_data = hist_data.dropna()
     return hist_data[[
         'ticker', 'date', 'MA20', 'MA50', 'BB_upper',

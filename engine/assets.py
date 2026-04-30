@@ -1,17 +1,12 @@
 import yfinance as yf
 import pandas as pd
 from src.database import get_connection
-
 import yfinance as yf
 
 
-
-def fetch_assest_data(symbol="AAPL"):
-
+def fetch_assets_data(symbol):
     ticker = yf.Ticker(symbol)
-
     info = ticker.info
-
     data = {
         "ticker": symbol,
 
@@ -49,13 +44,12 @@ def fetch_assest_data(symbol="AAPL"):
         "compensation_risk": info.get("compensationRisk"),
         "shareholder_rights_risk": info.get("shareHolderRightsRisk"),
         "overall_risk": info.get("overallRisk"),
-        "date": pd.Timestamp.today().date()
+        "updated_at": pd.Timestamp.today().date()
     }
     return pd.DataFrame([data])
 
 
-def save_assests_data(df):
+def save_assets_data(df):
     conn = get_connection()
-    df.to_sql("fundamentals", conn, if_exists="append", index=False)
+    df.to_sql("assets", conn, if_exists="append", index=False)
     conn.close()
-

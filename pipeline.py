@@ -2,6 +2,7 @@ from src.database import init_db
 from engine.prices import fetch_prices, save_prices, save_prices_features, import_stock_data
 from engine.fundamentals import fetch_fundamentals, save_fundamentals
 from engine.macro import run_macro_pipeline
+from engine.assets import fetch_assets_data, save_assets_data
 
 
 SYMBOLS = ["AAPL", "MSFT", "TSLA", "AMZN"]
@@ -31,6 +32,11 @@ def run_pipeline():
             save_fundamentals(fundamentals)
         except Exception as e:
             print(f"Fundamentals Error {symbol}: {e}")
+        try:
+            assets = fetch_assets_data(symbol)
+            save_assets_data(assets)
+        except Exception as e:
+            print(f"Assets Error: {e}")
 
     try:
         run_macro_pipeline()
