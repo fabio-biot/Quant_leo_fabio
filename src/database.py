@@ -10,9 +10,7 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # =========================
-    # 📊 PRICES (RAW DATA)
-    # =========================
+    # PRICES
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS prices (
         ticker TEXT NOT NULL,
@@ -26,9 +24,7 @@ def init_db():
     )
     """)
 
-    # =========================
-    # 🧠 FEATURES (ML DATA)
-    # =========================
+    # FEATURES
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS features (
         ticker TEXT NOT NULL,
@@ -49,9 +45,7 @@ def init_db():
     )
     """)
 
-    # =========================
-    # 🏢 FUNDAMENTALS (future use)
-    # =========================
+    # FUNDAMENTALS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS fundamentals (
         ticker TEXT NOT NULL,
@@ -62,9 +56,7 @@ def init_db():
     )
     """)
 
-    # =========================
-    # 🌍 MACRO DATA
-    # =========================
+    # MACRO
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS macro (
         date DATE PRIMARY KEY,
@@ -74,20 +66,9 @@ def init_db():
     )
     """)
 
-    # =========================
-    # ⚡ INDEXES (perf important)
-    # =========================
+    # TARGETS
     cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_prices_symbol_date
-    ON prices(ticker, date)
-    """)
-
-    cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_features_symbol_date
-    ON features(ticker, date)
-    """)
-
-    cursor.execute("""CREATE TABLE targets (
+    CREATE TABLE IF NOT EXISTS targets (
         ticker TEXT NOT NULL,
         date DATE NOT NULL,
         future_return_5d REAL,
@@ -95,9 +76,12 @@ def init_db():
         target_5d INTEGER,
         target_20d INTEGER,
         PRIMARY KEY (ticker, date)
-        )""")
+    )
+    """)
     
-    cursor.execute("""CREATE TABLE IF NOT EXISTS assets (
+    # ASSETS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS assets (
         ticker TEXT PRIMARY KEY,
         company_name TEXT,
         market_sector TEXT,
@@ -108,28 +92,31 @@ def init_db():
         region TEXT,
         financial_currency TEXT,
         asset_type TEXT,
-
         recommendation_key TEXT,
         recommendation_mean REAL,
-
         current_price REAL,
         target_high_price REAL,
         target_low_price REAL,
         target_mean_price REAL,
         target_median_price REAL,
-
         market_cap INTEGER,
         pe_ratio REAL,
-
         audit_risk INTEGER,
         board_risk INTEGER,
         compensation_risk INTEGER,
         shareholder_rights_risk INTEGER,
         overall_risk INTEGER,
-
+        sector_etf TEXT,
+        industry_etf TEXT,
+        market_index TEXT,
         updated_at TEXT
     )
     """)
+
+    # COMPONENT PRICES
+    cursor.execute("CREATE TABLE IF NOT EXISTS sector_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS industry_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS market_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
 
     conn.commit()
     conn.close()

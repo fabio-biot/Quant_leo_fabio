@@ -18,3 +18,6 @@ re:
 	rm -rf engine/__pycache__
 	rm -rf src/__pycache__
 	python3 pipeline.py
+	rm -rf __pycache__
+	rm -rf engine/__pycache__
+	rm -rf src/__pycache__

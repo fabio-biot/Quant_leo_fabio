@@ -3,9 +3,13 @@ from engine.prices import fetch_prices, save_prices, save_prices_features, impor
 from engine.fundamentals import fetch_fundamentals, save_fundamentals
 from engine.macro import run_macro_pipeline
 from engine.assets import fetch_assets_data, save_assets_data
+from engine.target import fetch_and_compute_targets, save_targets
+from engine.sector_price import fetch_sector_prices, save_sector_prices
+from engine.industry_price import fetch_industry_prices, save_industry_prices
+from engine.market_price import fetch_market_prices, save_market_prices
 
 
-SYMBOLS = ["AAPL", "MSFT", "TSLA", "AMZN"]
+SYMBOLS = ["AAPL", "MSFT", "TSLA", "AMZN", "ROG", "SHEL", "BP", "BHP", "RIO"]
 end_date = "2024-01-01"
 start_date = "2020-01-01"
 
@@ -15,33 +19,40 @@ def run_pipeline():
 
     for symbol in SYMBOLS:
         print(f"Processing {symbol}")
-
         try:
             raw_prices = import_stock_data(symbol, start_date, end_date)
             raw_prices.columns = [c.lower() for c in raw_prices.columns]
             save_prices(raw_prices)
-        except Exception as e:
-            print(f"Raw Price Error {symbol}: {e}")
+        except Exception as e: print(f"Raw Price Error: {e}")
+            
         try:
             features = fetch_prices(symbol, start_date, end_date)
             save_prices_features(features)
-        except Exception as e:
-            print(f"Features Price Error {symbol}: {e}")
+        except Exception as e: print(f"Features Error: {e}")
+            
         try:
             fundamentals = fetch_fundamentals(symbol)
             save_fundamentals(fundamentals)
-        except Exception as e:
-            print(f"Fundamentals Error {symbol}: {e}")
+        except Exception as e: print(f"Fundamentals Error: {e}")
+            
         try:
             assets = fetch_assets_data(symbol)
             save_assets_data(assets)
-        except Exception as e:
-            print(f"Assets Error: {e}")
+        except Exception as e: print(f"Assets Error: {e}")
+            
+        try:
+            targets = fetch_and_compute_targets(symbol, start_date, end_date)
+            save_targets(targets)
+        except Exception as e: print(f"Targets Error: {e}")
+
+    try: run_macro_pipeline()
+    except Exception as e: print(f"Macro error: {e}")
 
     try:
-        run_macro_pipeline()
-    except Exception as e:
-        print("Macro error:", e)
+        save_sector_prices(fetch_sector_prices())
+        save_industry_prices(fetch_industry_prices())
+        save_market_prices(fetch_market_prices())
+    except Exception as e: print(f"Component prices error: {e}")
 
 
 if __name__ == "__main__":
