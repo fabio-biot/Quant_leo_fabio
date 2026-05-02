@@ -49,7 +49,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS fundamentals (
         ticker TEXT NOT NULL,
-        date TEXT NOT NULL,
+        date DATE NOT NULL,
         market_cap REAL,
         pe_ratio REAL,
         PRIMARY KEY (ticker, date)
@@ -59,7 +59,7 @@ def init_db():
     # MACRO
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS macro (
-        date DATE PRIMARY KEY,
+        date DATE NOT NULL PRIMARY KEY,
         inflation REAL,
         interest_rate REAL,
         vix REAL

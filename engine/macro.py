@@ -52,4 +52,6 @@ def build_macro_dataset():
 def save_macro(df):
     conn = get_connection()
     df.to_sql("macro", conn, if_exists="append", index=False)
+    df.to_csv("tables_csv/macro.csv", mode="a", header=False, index=False)
+    print(f"Saved {len(df)} macro records to database and CSV.")
     conn.close()

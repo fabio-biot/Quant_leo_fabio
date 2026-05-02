@@ -10,7 +10,7 @@ def fetch_fundamentals(symbol="AAPL"):
 
     data = {
         "ticker": symbol,
-        "date": pd.Timestamp.today().date(),
+        "date": pd.to_datetime(pd.Timestamp.today().date(),format="%Y-%m-%d"),
         "market_cap": info.get("marketCap"),
         "pe_ratio": info.get("trailingPE")
     }

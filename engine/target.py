@@ -5,6 +5,7 @@ from src.database import get_connection
 
 def compute_targets(df: pd.DataFrame):
     df = df.sort_values(['ticker', 'date'])
+    df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
     df['future_return_5d'] = df.groupby('ticker')['close'].shift(-5) / df['close'] - 1
     df['future_return_20d'] = df.groupby('ticker')['close'].shift(-20) / df['close'] - 1
     df['target_5d'] = (df['future_return_5d'] > 0).astype(int)
