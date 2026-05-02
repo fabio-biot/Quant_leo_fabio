@@ -7,6 +7,8 @@ def fetch_sector_prices():
     conn = get_connection()
     query = "SELECT DISTINCT sector_etf FROM assets WHERE sector_etf IS NOT NULL"
     tickers_df = pd.read_sql(query, conn)
+    print(f"Found {len(tickers_df)} unique sector ETFs")
+    print(tickers_df)
     rows = []
     for ticker in tickers_df["sector_etf"]:
         try:

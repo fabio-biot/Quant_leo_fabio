@@ -53,8 +53,3 @@ def save_macro(df):
     conn = get_connection()
     df.to_sql("macro", conn, if_exists="append", index=False)
     conn.close()
-
-
-def run_macro_pipeline():
-    df = build_macro_dataset()
-    save_macro(df)
