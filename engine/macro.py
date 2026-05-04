@@ -22,7 +22,7 @@ def fetch_interest_rate():
 
 
 def fetch_vix():
-    vix = yf.download("^VIX", period="5y")
+    vix = yf.download("^VIX", start="2020-01-01")
     if isinstance(vix.columns, pd.MultiIndex):
         vix.columns = vix.columns.get_level_values(0)
     vix = vix.reset_index(0)
@@ -39,13 +39,24 @@ def fetch_inflation():
 
 
 def build_macro_dataset():
+    all_dates = pd.date_range(
+        start="2020-01-01",
+        end=datetime.today(),
+        freq="D"
+    )
+    calendar = pd.DataFrame({"date": all_dates})
     inflation = fetch_inflation()
     rates = fetch_interest_rate()
     vix = fetch_vix()
-    df = inflation.merge(rates, on="date", how="outer")
-    df = df.merge(vix, on="date", how="outer")
+    df = calendar.merge(inflation, on="date", how="left")
+    df = df.merge(rates, on="date", how="left")
+    df[["inflation", "interest_rate"]] = (
+        df[["inflation", "interest_rate"]]
+        .ffill()
+    )
+    df = df.merge(vix, on="date", how="left")
     df = df.sort_values("date")
-    df = df.dropna()
+    df = df.ffill().bfill()
     return df
 
 
@@ -53,5 +64,4 @@ def save_macro(df):
     conn = get_connection()
     df.to_sql("macro", conn, if_exists="append", index=False)
     df.to_csv("tables_csv/macro.csv", mode="a", header=False, index=False)
-    print(f"Saved {len(df)} macro records to database and CSV.")
     conn.close()

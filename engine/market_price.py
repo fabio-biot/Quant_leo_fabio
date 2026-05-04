@@ -6,16 +6,16 @@ def fetch_market_prices():
     conn = get_connection()
 
     query = """
-    SELECT DISTINCT market_index
+    SELECT DISTINCT market_etf
     FROM assets
-    WHERE market_index IS NOT NULL
+    WHERE market_etf IS NOT NULL
     """
 
     tickers_df = pd.read_sql(query, conn)
     rows = []
-    for ticker in tickers_df["market_index"]:
+    for ticker in tickers_df["market_etf"]:
         try:
-            print(f"Processing market index {ticker}")
+            print(f"Processing market etf {ticker}")
             data = yf.download(
                 ticker,
                 period="3y",
@@ -27,13 +27,24 @@ def fetch_market_prices():
             if isinstance(data.columns, pd.MultiIndex):
                 data.columns = data.columns.get_level_values(0)
             data = data.reset_index()
-            for _, row in data.iterrows():
-                rows.append({
-                    "ticker": ticker,
-                    "date": row["Date"].date(),
-                    "close": float(row["Close"]),
-                    "volume": float(row["Volume"])
-                })
+            data["date"] = pd.to_datetime(data["Date"])
+            data = data[["date", "Close", "Volume"]]
+            data.columns = ["date", "close", "volume"]
+            data["ticker"] = ticker
+            date_str = data["date"].dt.strftime('%Y-%m-%d')
+            data["key"] = [
+                f"{ticker}{d}"
+                for d in date_str
+            ]
+            data["volume"] = data["volume"].fillna(0)
+            data = data[[
+                "ticker",
+                "date",
+                "close",
+                "volume",
+                "key"
+            ]]
+            rows.extend(data.to_dict("records"))
         except Exception as e:
             print(f"Market Error {ticker}: {e}")
     conn.close()

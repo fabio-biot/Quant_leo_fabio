@@ -43,8 +43,8 @@ def fetch_assets_data(symbol):
         data["industry_etf"] = industry_dim[industry_dim["industry"] == data["industry"]]["etf"].values[0]
     except: data["industry_etf"] = None
     try:
-        data["market_index"] = market_dim[market_dim["market"] == data["market_country"]]["ticker"].values[0]
-    except: data["market_index"] = None
+        data["market_etf"] = market_dim[market_dim["market"] == data["market_country"]]["ticker"].values[0]
+    except: data["market_etf"] = None
     try:
         data["sector_etf"] = sector_dim[sector_dim["sector"] == data["market_sector"]]["etf"].values[0]
     except: data["sector_etf"] = None

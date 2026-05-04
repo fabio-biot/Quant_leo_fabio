@@ -20,13 +20,14 @@ def init_db():
         low REAL,
         close REAL,
         volume REAL,
-        PRIMARY KEY (ticker, date)
+        key TEXT PRIMARY KEY
     )
     """)
 
     # FEATURES
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS features (
+        key TEXT PRIMARY KEY,
         ticker TEXT NOT NULL,
         date DATE NOT NULL,
         ma20 REAL,
@@ -39,9 +40,12 @@ def init_db():
         return REAL,
         volatility REAL,
         rsi_14 REAL,
+        future_return_5d,
+        future_return_10d,
+        future_return_20d,
+        future_return_60d,
         close_lag_1 REAL,
-        close_lag_2 REAL,
-        PRIMARY KEY (ticker, date)
+        close_lag_2 REAL
     )
     """)
 
@@ -108,15 +112,15 @@ def init_db():
         overall_risk INTEGER,
         sector_etf TEXT,
         industry_etf TEXT,
-        market_index TEXT,
+        market_etf TEXT,
         updated_at TEXT
     )
     """)
 
     # COMPONENT PRICES
-    cursor.execute("CREATE TABLE IF NOT EXISTS sector_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS industry_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS market_prices (ticker TEXT, date DATE, close REAL, volume REAL, PRIMARY KEY (ticker, date))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS sector_prices (ticker TEXT, date DATE, close REAL, volume REAL, key TEXT PRIMARY KEY)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS industry_prices (ticker TEXT, date DATE, close REAL, volume REAL, key TEXT PRIMARY KEY)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS market_prices (ticker TEXT, date DATE, close REAL, volume REAL, key TEXT PRIMARY KEY)")
 
     conn.commit()
     conn.close()

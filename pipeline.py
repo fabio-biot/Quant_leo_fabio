@@ -45,9 +45,14 @@ def run_pipeline():
 
 
     try:
-        save_sector_prices(fetch_sector_prices())
-        save_industry_prices(fetch_industry_prices())
-        save_market_prices(fetch_market_prices())
+        sector_df = fetch_sector_prices()
+        save_sector_prices(sector_df)
+        
+        market_df = fetch_market_prices()
+        save_market_prices(market_df)
+
+        industry_df = fetch_industry_prices()
+        save_industry_prices(industry_df)
     except Exception as e:
         print(f"Component prices error: {e}")
     try:

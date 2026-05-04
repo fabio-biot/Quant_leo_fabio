@@ -10,6 +10,7 @@ def compute_targets(df: pd.DataFrame):
     df['future_return_20d'] = df.groupby('ticker')['close'].shift(-20) / df['close'] - 1
     df['target_5d'] = (df['future_return_5d'] > 0).astype(int)
     df['target_20d'] = (df['future_return_20d'] > 0).astype(int)
+    df["key"] = df["ticker"] + df["date"].dt.strftime('%Y-%m-%d')
     df = df.dropna(subset=['future_return_5d', 'future_return_20d'])
     return df[['ticker', 'date', 'future_return_5d', 'future_return_20d', 'target_5d', 'target_20d']]
 

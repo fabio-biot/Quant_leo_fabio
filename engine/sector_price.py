@@ -5,10 +5,15 @@ from src.database import get_connection
 
 def fetch_sector_prices():
     conn = get_connection()
-    query = "SELECT DISTINCT sector_etf FROM assets WHERE sector_etf IS NOT NULL"
+
+    query = """
+    SELECT DISTINCT sector_etf
+    FROM assets
+    WHERE sector_etf IS NOT NULL
+    """
+
     tickers_df = pd.read_sql(query, conn)
     print(f"Found {len(tickers_df)} unique sector ETFs")
-    print(tickers_df)
     rows = []
     for ticker in tickers_df["sector_etf"]:
         try:
@@ -26,13 +31,26 @@ def fetch_sector_prices():
             data = data.reset_index()
             data = data[["Date", "Close", "Volume"]]
             data.columns = ["date", "close", "volume"]
+            date_str = data["date"].dt.strftime('%Y-%m-%d')
+            data["key"] = [f"{ticker}{d}"
+                for d in date_str
+            ]
             data["ticker"] = ticker
-            data = data[["ticker", "date", "close", "volume"]]
+            data = data[[
+                "ticker",
+                "date",
+                "close",
+                "volume",
+                "key"
+            ]]
             rows.extend(data.to_dict("records"))
-
+    
         except Exception as e:
             print(f"Sector Error {ticker}: {e}")
+    conn.close()
+
     return pd.DataFrame(rows)
+
 
 
 def save_sector_prices(df):

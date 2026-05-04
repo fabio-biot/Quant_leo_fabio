@@ -12,6 +12,7 @@ pycache:
 	rm -rf engine/__pycache__
 	rm -rf src/__pycache__
 	rm -rf XGBoost_model/__pycache__
+	rm -rf engine/analysis/__pycache__
 
 re:
 	rm -f database/database.db
@@ -21,6 +22,7 @@ re:
 	python3 -m pipeline
 	python3 -m XGBoost_model.dataset_builder
 	rm -rf engine/__pycache__
+	rm -rf engine/analysis/__pycache__
 	rm -rf src/__pycache__
 	rm -rf XGBoost_model/__pycache__
 	rm -rf __pycache__

@@ -9,7 +9,7 @@ def fetch_etf_features(type_etf: str):
     column_map = {
         "sector": "sector_etf",
         "industry": "industry_etf",
-        "market": "market_index"
+        "market": "market_etf"
     }
     etf_column = column_map[type_etf]
 
@@ -20,7 +20,6 @@ def fetch_etf_features(type_etf: str):
     """
 
     tickers_df = pd.read_sql(query, conn)
-    print(f"Found {len(tickers_df)} unique {type_etf} ETFs")
     rows = []
     for ticker in tickers_df[etf_column]:
         try:
@@ -47,6 +46,11 @@ def fetch_etf_features(type_etf: str):
             hist_data['Close_lag_1'] = (hist_data['Close'].shift(1))
             hist_data['Close_lag_2'] = (hist_data['Close'].shift(2))
             hist_data['ticker'] = ticker
+            hist_data["future_return_5d"] = (hist_data.groupby("ticker")["Close"].shift(-5) / hist_data["Close"] - 1)
+            hist_data["future_return_10d"] = (hist_data.groupby("ticker")["Close"].shift(-10) / hist_data["Close"] - 1)
+            hist_data["future_return_20d"] = (hist_data.groupby("ticker")["Close"].shift(-20) / hist_data["Close"] - 1)
+            hist_data["future_return_60d"] = (hist_data.groupby("ticker")["Close"].shift(-60) / hist_data["Close"] - 1)
+            hist_data['key'] = ticker + hist_data["date"].dt.strftime('%Y-%m-%d')
             hist_data = hist_data.dropna()
             hist_data = hist_data[[
                 'ticker',
@@ -61,8 +65,13 @@ def fetch_etf_features(type_etf: str):
                 'Return',
                 'Volatility',
                 'RSI_14',
+                'future_return_5d',
+                'future_return_10d',
+                'future_return_20d',
+                'future_return_60d',
                 'Close_lag_1',
-                'Close_lag_2'
+                'Close_lag_2', 
+                'key'
             ]]
             rows.append(hist_data)
         except Exception as e:

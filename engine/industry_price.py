@@ -5,7 +5,6 @@ from src.database import get_connection
 
 def fetch_industry_prices():
     conn = get_connection()
-
     query = """
     SELECT DISTINCT industry_etf
     FROM assets
@@ -28,16 +27,27 @@ def fetch_industry_prices():
             if isinstance(data.columns, pd.MultiIndex):
                 data.columns = data.columns.get_level_values(0)
             data = data.reset_index()
-            for _, row in data.iterrows():
-                rows.append({
-                    "ticker": ticker,
-                    "date": row["Date"].date(),
-                    "close": float(row["Close"]),
-                    "volume": float(row["Volume"])
-                })
+            data = data[["Date", "Close", "Volume"]]
+            data.columns = ["date", "close", "volume"]
+            date_str = data["date"].dt.strftime('%Y-%m-%d')
+            data["key"] = [
+                f"{ticker}{d}"
+                for d in date_str
+            ]
+            data["ticker"] = ticker
+            data["volume"] = data["volume"].fillna(0)
+            data = data[[
+                "ticker",
+                "date",
+                "close",
+                "volume",
+                "key"
+            ]]
+            rows.extend(data.to_dict("records"))
 
         except Exception as e:
             print(f"Industry Error {ticker}: {e}")
+
     conn.close()
     return pd.DataFrame(rows)
 
@@ -46,16 +56,6 @@ def save_industry_prices(df):
     if df.empty:
         return
     conn = get_connection()
-    df.to_sql(
-        "industry_prices",
-        conn,
-        if_exists="append",
-        index=False
-    )
-    df.to_csv(
-        "tables_csv/industry_prices.csv",
-        mode="a",
-        header=False,
-        index=False
-    )
+    df.to_sql("industry_prices", conn, if_exists="append", index=False)
+    df.to_csv("tables_csv/industry_prices.csv", mode="a", header=False, index=False)
     conn.close()

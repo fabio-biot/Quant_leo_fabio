@@ -11,6 +11,7 @@ def import_stock_data(ticker: str, start_date: str, end_date: str):
     df["ticker"] = ticker
     df = df.rename(columns={'Date': 'date'})
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
+    df["key"] = df["ticker"] + df["date"].dt.strftime("%Y-%m-%d")
     return df
 
 
@@ -18,10 +19,8 @@ def compute_rsi(window: int, serie: pd.Series):
     delta = serie.diff()
     loss = -delta.clip(upper=0)
     gain = delta.clip(lower=0)
-
     avg_gain = gain.rolling(window).mean()
     avg_loss = loss.rolling(window).mean()
-
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
@@ -46,21 +45,30 @@ def fetch_prices(ticker: str, start_date: str, end_date: str):
     hist_data['RSI_14'] = compute_rsi(14, hist_data['Close'])
     hist_data['Close_lag_1'] = hist_data['Close'].shift(1)
     hist_data['Close_lag_2'] = hist_data['Close'].shift(2)
+    hist_data["future_return_5d"] = (hist_data.groupby("ticker")["Close"].shift(-5) / hist_data["Close"] - 1)
+    hist_data["future_return_10d"] = (hist_data.groupby("ticker")["Close"].shift(-10) / hist_data["Close"] - 1)
+    hist_data["future_return_20d"] = (hist_data.groupby("ticker")["Close"].shift(-20) / hist_data["Close"] - 1)
+    hist_data["future_return_60d"] = (hist_data.groupby("ticker")["Close"].shift(-60) / hist_data["Close"] - 1)
+    hist_data['key'] = hist_data['ticker'] + hist_data['date'].dt.strftime('%Y-%m-%d')
     hist_data = hist_data.dropna()
     return hist_data[[
-        'ticker', 'date', 'MA20', 'MA50', 'BB_upper',
+        "key", 'ticker', 'date', 'MA20', 'MA50', 'BB_upper',
         'BB_lower', 'BB_position', 'MA20_diff', 'Momentum_5',
-        'Return', 'Volatility', 'RSI_14', 'Close_lag_1', 'Close_lag_2'
+        'Return', 'Volatility', 'RSI_14', 'future_return_5d',
+        'future_return_10d', 'future_return_20d', 'future_return_60d',
+        'Close_lag_1', 'Close_lag_2'
     ]]
 
 
 def save_prices(df: pd.DataFrame):
     conn = get_connection()
     df.to_sql("prices", conn, if_exists="append", index=False)
+    df.to_csv("tables_csv/prices.csv", mode="a", header=True, index=False)
     conn.close()
 
 
 def save_prices_features(df: pd.DataFrame):
     conn = get_connection()
     df.to_sql("features", conn, if_exists="append", index=False)
+    df.to_csv("tables_csv/features.csv", mode="a", header=True, index=False)
     conn.close()
