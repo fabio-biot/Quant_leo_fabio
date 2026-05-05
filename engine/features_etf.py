@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import numpy as np
 from src.database import get_connection
 from .prices import compute_rsi
 
@@ -37,9 +38,13 @@ def fetch_etf_features(type_etf: str):
             hist_data['BB_upper'] = (hist_data['MA20'] + 2 * rolling_std)
             hist_data['BB_lower'] = (hist_data['MA20'] - 2 * rolling_std)
             hist_data['MA20_diff'] = (hist_data['Close'] - hist_data['MA20'])
-            hist_data['BB_position'] = ((hist_data['Close'] - hist_data['BB_lower']) / \
-                                        (hist_data['BB_upper'] - hist_data['BB_lower']))
-            hist_data['Momentum_5'] = (hist_data['Close'] - hist_data['Close'].shift(5))
+            hist_data["BB_position"] = ((hist_data["Close"] - hist_data["BB_lower"]) /
+                (hist_data["BB_upper"] - hist_data["BB_lower"])
+            ).replace([np.inf, -np.inf], np.nan)
+            hist_data["Momentum_5"] = hist_data["Close"].pct_change(5)
+            hist_data["Momentum_20"] = hist_data["Close"].pct_change(20)
+            hist_data["Momentum_60"] = hist_data["Close"].pct_change(60)
+            hist_data["Momentum_120"] = hist_data["Close"].pct_change(120)
             hist_data['Return'] = (hist_data['Close'].pct_change())
             hist_data['Volatility'] = (hist_data['Return'].rolling(10).std())
             hist_data['RSI_14'] = compute_rsi(14, hist_data['Close'])
@@ -50,8 +55,10 @@ def fetch_etf_features(type_etf: str):
             hist_data["future_return_10d"] = (hist_data.groupby("ticker")["Close"].shift(-10) / hist_data["Close"] - 1)
             hist_data["future_return_20d"] = (hist_data.groupby("ticker")["Close"].shift(-20) / hist_data["Close"] - 1)
             hist_data["future_return_60d"] = (hist_data.groupby("ticker")["Close"].shift(-60) / hist_data["Close"] - 1)
+            hist_data["future_return_120d"] = (hist_data.groupby("ticker")["Close"].shift(-120) / hist_data["Close"] - 1)
+            hist_data["future_return_252d"] = (hist_data.groupby("ticker")["Close"].shift(-252) / hist_data["Close"] - 1)
             hist_data['key'] = ticker + hist_data["date"].dt.strftime('%Y-%m-%d')
-            hist_data = hist_data.dropna()
+            # hist_data = hist_data.dropna()
             hist_data = hist_data[[
                 'ticker',
                 'date',
@@ -62,6 +69,9 @@ def fetch_etf_features(type_etf: str):
                 'BB_position',
                 'MA20_diff',
                 'Momentum_5',
+                'Momentum_20',
+                'Momentum_60',
+                'Momentum_120',
                 'Return',
                 'Volatility',
                 'RSI_14',
@@ -69,6 +79,8 @@ def fetch_etf_features(type_etf: str):
                 'future_return_10d',
                 'future_return_20d',
                 'future_return_60d',
+                'future_return_120d',
+                'future_return_252d',
                 'Close_lag_1',
                 'Close_lag_2', 
                 'key'
@@ -87,7 +99,7 @@ def save_etf_features(df: pd.DataFrame, type_etf: str):
         return
     conn = get_connection()
     df.to_sql(f"etf_features_{type_etf}", conn, if_exists="append", index=False)
-    df.to_csv(f"tables_csv/etf_features_{type_etf}.csv", mode="a", header=False, index=False)
+    df.to_csv(f"tables_csv/etf_features_{type_etf}.csv", mode="a", header=True, index=False)
     conn.close()
 
 # if __name__ == "__main__":

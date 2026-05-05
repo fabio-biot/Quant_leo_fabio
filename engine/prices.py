@@ -39,7 +39,10 @@ def fetch_prices(ticker: str, start_date: str, end_date: str):
     hist_data['MA20_diff'] = hist_data['Close'] - hist_data['MA20']
     hist_data['BB_position'] = (hist_data['Close'] - hist_data['BB_lower']) / \
         (hist_data['BB_upper'] - hist_data['BB_lower'])
-    hist_data['Momentum_5'] = hist_data['Close'] - hist_data['Close'].shift(5)
+    hist_data["Momentum_5"] = hist_data["Close"].pct_change(5)
+    hist_data["Momentum_20"] = hist_data["Close"].pct_change(20)
+    hist_data["Momentum_60"] = hist_data["Close"].pct_change(60)
+    hist_data["Momentum_120"] = hist_data["Close"].pct_change(120)
     hist_data['Return'] = hist_data['Close'].pct_change()
     hist_data['Volatility'] = hist_data['Return'].rolling(10).std()
     hist_data['RSI_14'] = compute_rsi(14, hist_data['Close'])
@@ -49,14 +52,16 @@ def fetch_prices(ticker: str, start_date: str, end_date: str):
     hist_data["future_return_10d"] = (hist_data.groupby("ticker")["Close"].shift(-10) / hist_data["Close"] - 1)
     hist_data["future_return_20d"] = (hist_data.groupby("ticker")["Close"].shift(-20) / hist_data["Close"] - 1)
     hist_data["future_return_60d"] = (hist_data.groupby("ticker")["Close"].shift(-60) / hist_data["Close"] - 1)
+    hist_data["future_return_120d"] = (hist_data.groupby("ticker")["Close"].shift(-120) / hist_data["Close"] - 1)
+    hist_data["future_return_252d"] = (hist_data.groupby("ticker")["Close"].shift(-252) / hist_data["Close"] - 1)
     hist_data['key'] = hist_data['ticker'] + hist_data['date'].dt.strftime('%Y-%m-%d')
-    hist_data = hist_data.dropna()
+    # hist_data = hist_data.dropna()
     return hist_data[[
         "key", 'ticker', 'date', 'MA20', 'MA50', 'BB_upper',
-        'BB_lower', 'BB_position', 'MA20_diff', 'Momentum_5',
+        'BB_lower', 'BB_position', 'MA20_diff', 'Momentum_5','Momentum_20','Momentum_60','Momentum_120',
         'Return', 'Volatility', 'RSI_14', 'future_return_5d',
         'future_return_10d', 'future_return_20d', 'future_return_60d',
-        'Close_lag_1', 'Close_lag_2'
+        'future_return_120d', 'future_return_252d', 'Close_lag_1', 'Close_lag_2'
     ]]
 
 

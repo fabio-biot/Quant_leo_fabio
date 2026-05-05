@@ -19,8 +19,10 @@ re:
 	rm -rf __pycache__
 	rm -rf engine/__pycache__
 	rm -rf src/__pycache__
+	rm -rf tables_csv/*.csv
 	python3 -m pipeline
 	python3 -m XGBoost_model.dataset_builder
+
 	rm -rf engine/__pycache__
 	rm -rf engine/analysis/__pycache__
 	rm -rf src/__pycache__

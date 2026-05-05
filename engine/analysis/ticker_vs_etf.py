@@ -38,7 +38,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
         etf_features_market["date"]
     )
 
-
     df = prices.merge(
         assets,
         on="ticker",
@@ -80,17 +79,14 @@ def build_relative_strength_signals() -> pd.DataFrame:
     )
 
 
-
+    
 # -----------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------
 
-        # -----------------------------------------------------------------------------------
-    # SECTOR SIGNALS
-    # -----------------------------------------------------------------------------------
 
     df["rs_sector_signal"] = (
-        df["momentum_5"] > df["Momentum_5"]
+        df["momentum_60"] > df["Momentum_60"]
     ).astype(int)
 
     df["volatility_sector_signal"] = (
@@ -110,17 +106,13 @@ def build_relative_strength_signals() -> pd.DataFrame:
         df["bb_position"] > df["BB_position"]
     ).astype(int)
 
-    df["return_rank_20d_sector_signal"] = (
-        df.groupby("date")["future_return_20d"]
-        .rank(pct=True)
-    )
-
+    
     # -----------------------------------------------------------------------------------
     # INDUSTRY SIGNALS
     # -----------------------------------------------------------------------------------
 
     df["rs_industry_signal"] = (
-        df["momentum_5"] > df["Momentum_5_industry"]
+        df["momentum_60"] > df["Momentum_60_industry"]
     ).astype(int)
 
     df["volatility_industry_signal"] = (
@@ -140,10 +132,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
         df["bb_position"] > df["BB_position_industry"]
     ).astype(int)
         
-    df["return_rank_20d_industry_signal"] = (
-        df.groupby("date")["future_return_20d"]
-        .rank(pct=True)
-    )
 
 
     # -----------------------------------------------------------------------------------
@@ -151,7 +139,7 @@ def build_relative_strength_signals() -> pd.DataFrame:
     # -----------------------------------------------------------------------------------
 
     df["rs_market_signal"] = (
-        df["momentum_5"] > df["Momentum_5_market"]
+        df["momentum_60"] > df["Momentum_60_market"]
     ).astype(int)
 
     df["volatility_market_signal"] = (
@@ -171,10 +159,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
         df["bb_position"] > df["BB_position_market"]
     ).astype(int)
 
-    df["return_rank_20d_market_signal"] = (
-        df.groupby("date")["future_return_20d"]
-        .rank(pct=True)
-    )
 
 
     # -----------------------------------------------------------------------------------
@@ -188,7 +172,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
         "trend_sector_signal",
         "rsi_sector_signal",
         "bb_position_sector_signal",
-        "return_rank_20d_sector_signal",
 
         # Industry
         "rs_industry_signal",
@@ -196,15 +179,13 @@ def build_relative_strength_signals() -> pd.DataFrame:
         "trend_industry_signal",
         "rsi_industry_signal",
         "bb_position_industry_signal",
-        "return_rank_20d_industry_signal",
 
         # Market
         "rs_market_signal",
         "volatility_market_signal",
         "trend_market_signal",
         "rsi_market_signal",
-        "bb_position_market_signal",
-        "return_rank_20d_market_signal"
+        "bb_position_market_signal"
     ]
 
     df["quant_score"] = df[signal_columns].sum(axis=1)
@@ -218,7 +199,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
 # -----------------------------------------------------------------
 # -----------------------------------------------------------------
 
-    df.dropna(inplace=True)
     final_columns = [
         "key",
         "ticker",
@@ -229,7 +209,6 @@ def build_relative_strength_signals() -> pd.DataFrame:
     final_df = df[final_columns]
     final_df.to_csv("tables_csv/relative_strength_signals.csv",index=False)
     final_df.to_sql("relative_strength_signals", conn, if_exists="replace", index=False)
-    print(final_df.head())
 
     conn.close()
     return final_df

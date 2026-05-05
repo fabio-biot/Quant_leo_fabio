@@ -12,7 +12,7 @@ from engine.features_etf import fetch_etf_features, save_etf_features
 
 # SYMBOLS = ["AAPL", "MSFT", "TSLA", "AMZN", "ROG","BNP.PA", "SHEL", "BP", "BHP", "RIO"]
 SYMBOLS = ["AAPL", "MSFT"]
-end_date = "2024-01-01"
+end_date = "2026-06-06"
 start_date = "2020-01-01"
 
 
