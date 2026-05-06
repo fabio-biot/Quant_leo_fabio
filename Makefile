@@ -28,3 +28,22 @@ re:
 	rm -rf src/__pycache__
 	rm -rf XGBoost_model/__pycache__
 	rm -rf __pycache__
+	python3 -m engine.analysis.ticker_vs_etf
+	rm -rf engine/__pycache__
+	rm -rf engine/analysis/__pycache__
+	rm -rf src/__pycache__
+	rm -rf XGBoost_model/__pycache__
+	rm -rf __pycache__
+
+dataset:
+	rm -rf engine/__pycache__
+	rm -rf engine/analysis/__pycache__
+	rm -rf src/__pycache__
+	rm -rf XGBoost_model/__pycache__
+	rm -rf __pycache__
+	python3 -m engine.analysis.ticker_vs_etf
+	rm -rf engine/__pycache__
+	rm -rf engine/analysis/__pycache__
+	rm -rf src/__pycache__
+	rm -rf XGBoost_model/__pycache__
+	rm -rf __pycache__
